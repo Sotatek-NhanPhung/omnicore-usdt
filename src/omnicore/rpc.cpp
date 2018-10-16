@@ -1639,7 +1639,7 @@ UniValue omni_gettradehistoryforaddress(const UniValue& params, bool fHelp)
             + HelpExampleRpc("omni_gettradehistoryforaddress", "\"1MCHESTptvd2LnNp7wmr2sGTpRomteAkq8\"")
         );
 
-    std::string address = ParseAddress(params[0]);
+    std::string address = ParseAddress(params[0].get_str());
     uint64_t count = (params.size() > 1) ? params[1].get_int64() : 10;
     uint32_t propertyId = 0;
 
@@ -1659,8 +1659,9 @@ UniValue omni_gettradehistoryforaddress(const UniValue& params, bool fHelp)
     UniValue response(UniValue::VARR);
     uint32_t processed = 0;
     for(std::vector<uint256>::reverse_iterator it = vecTransactions.rbegin(); it != vecTransactions.rend(); ++it) {
+        uint256 txHash = it->second;
         UniValue txobj(UniValue::VOBJ);
-        int populateResult = populateRPCTransactionObject(*it, txobj, "", true);
+        int populateResult = populateRPCTransactionObject(txHash, txobj, "", true);
         if (0 == populateResult) {
             response.push_back(txobj);
             processed++;
