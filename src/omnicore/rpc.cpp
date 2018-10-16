@@ -1659,9 +1659,8 @@ UniValue omni_gettradehistoryforaddress(const UniValue& params, bool fHelp)
     UniValue response(UniValue::VARR);
     uint32_t processed = 0;
     for(std::vector<uint256>::reverse_iterator it = vecTransactions.rbegin(); it != vecTransactions.rend(); ++it) {
-        uint256 txHash = it->second;
         UniValue txobj(UniValue::VOBJ);
-        int populateResult = populateRPCTransactionObject(txHash, txobj, "", true);
+        int populateResult = populateRPCTransactionObject(*it, txobj, "", true);
         if (0 == populateResult) {
             response.push_back(txobj);
             processed++;
